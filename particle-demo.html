@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimize Particle System</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        #ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">Interactive Particle System // OPTIMIZE</div>
+    <canvas id="particleCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 100
+        };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        window.addEventListener('touchstart', (event) => {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (event) => {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor(x, y) {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.baseX = x;
+                this.baseY = y;
+                this.size = 1.5;
+                this.density = (Math.random() * 30) + 1;
+                this.vx = 0;
+                this.vy = 0;
+                this.friction = 0.95;
+                this.spring = 0.05;
+            }
+
+            draw() {
+                ctx.fillStyle = '#00f2fe';
+                ctx.shadowColor = '#00f2fe';
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                // Shiver effect
+                this.x += (Math.random() - 0.5) * 0.5;
+                this.y += (Math.random() - 0.5) * 0.5;
+
+                // Repulsion logic
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = mouse.radius;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density;
+                let directionY = forceDirectionY * force * this.density;
+
+                if (distance < mouse.radius) {
+                    this.vx -= directionX;
+                    this.vy -= directionY;
+                } else {
+                    // Spring back to home
+                    let dxHome = this.baseX - this.x;
+                    let dyHome = this.baseY - this.y;
+                    this.vx += dxHome * this.spring;
+                    this.vy += dyHome * this.spring;
+                }
+
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+        }
+
+        function init() {
+            particles = [];
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Use a temporary canvas to draw text and sample pixels
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+
+            const fontSize = Math.min(canvas.width / 6, 180);
+            tempCtx.fillStyle = 'white';
+            tempCtx.font = `900 ${fontSize}px Inter, sans-serif`;
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.fillText('OPTIMIZE', tempCanvas.width / 2, tempCanvas.height / 2);
+
+            const textData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const step = Math.floor(fontSize / 25); // Adjust density based on font size
+
+            for (let y = 0; y < textData.height; y += step) {
+                for (let x = 0; x < textData.width; x += step) {
+                    if (textData.data[(y * 4 * textData.width) + (x * 4) + 3] > 128) {
+                        particles.push(new Particle(x, y));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            init();
+        });
+
+        // Wait for font to load if possible, then init
+        document.fonts.ready.then(() => {
+            init();
+            animate();
+        });
+
+    </script>
+</body>
+</html>

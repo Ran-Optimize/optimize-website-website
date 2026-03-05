@@ -1,7 +1,23 @@
 
 import React, { useState } from 'react';
-import { generateSiteConcept } from '../services/geminiService';
-import { SiteStrategy } from '../types';
+// Import GoogleGenAI and Type from @google/genai to handle content generation directly
+import { GoogleGenAI, Type } from "@google/genai";
+
+// Re-defining SiteStrategy interface locally as the types.ts file is empty/non-module
+interface SiteStrategy {
+  brandName: string;
+  tagline: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
+  priceEstimation: string;
+  sections: {
+    title: string;
+    description: string;
+  }[];
+}
 
 export const AIBrain: React.FC = () => {
   const [description, setDescription] = useState('');
@@ -9,13 +25,54 @@ export const AIBrain: React.FC = () => {
   const [strategy, setStrategy] = useState<SiteStrategy | null>(null);
   const [error, setError] = useState('');
 
+  // Fixed handleGenerate to use the @google/genai SDK directly and generate structured JSON in Hebrew
   const handleGenerate = async () => {
     if (!description) return;
     setLoading(true);
     setError('');
     try {
-      const result = await generateSiteConcept(description);
-      setStrategy(result);
+      // Create a new GoogleGenAI instance right before the API call as per guidelines
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `צור אסטרטגיה וקונספט לאתר אינטרנט על בסיס התיאור הבא: ${description}. התגובה חייבת להיות בעברית עבור כל שדות הטקסט.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              brandName: { type: Type.STRING },
+              tagline: { type: Type.STRING },
+              colors: {
+                type: Type.OBJECT,
+                properties: {
+                  primary: { type: Type.STRING, description: 'Hex code' },
+                  secondary: { type: Type.STRING, description: 'Hex code' },
+                  accent: { type: Type.STRING, description: 'Hex code' },
+                },
+                required: ["primary", "secondary", "accent"],
+              },
+              priceEstimation: { type: Type.STRING },
+              sections: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    description: { type: Type.STRING },
+                  },
+                  required: ["title", "description"],
+                },
+              },
+            },
+            required: ["brandName", "tagline", "colors", "priceEstimation", "sections"],
+          },
+        },
+      });
+
+      const jsonStr = response.text || '{}';
+      const result = JSON.parse(jsonStr);
+      setStrategy(result as SiteStrategy);
     } catch (err) {
       setError('חלה שגיאה ביצירת הקונספט. נסו שוב.');
       console.error(err);

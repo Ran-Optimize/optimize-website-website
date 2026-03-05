@@ -3,325 +3,1259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimize | סוכנות בניית אתרים</title>
+    <title>Optimize | בניית אתרים ברמה אחרת</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;400;700;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;400;600;700;800&family=Space+Grotesk:wght@300;500;700&family=Open+Sans:wght@800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --primary-rgb: 0, 242, 254;
+            --bg: #030303;
+        }
         body {
             font-family: 'Assistant', sans-serif;
-            background-color: #050505;
+            background-color: var(--bg);
             color: #ffffff;
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
-        .font-modern { font-family: 'Space+Grotesk', sans-serif; }
+        .font-modern { font-family: 'Space Grotesk', sans-serif; }
         .gradient-text {
-            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .glass {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .glow-button {
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
-            transition: all 0.3s ease;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .glow-button:hover {
-            box-shadow: 0 0 40px rgba(79, 172, 254, 0.7);
-            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(var(--primary-rgb), 0.6);
+            transform: translateY(-3px) scale(1.02);
         }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        .service-card {
+            transition: all 0.4s ease;
+        }
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(var(--primary-rgb), 0.3);
+            transform: translateY(-8px);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #030303; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.1); }
+        @keyframes rotate-bg {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        .animate-pulse-bg { animation: pulse-slow 8s infinite ease-in-out; }
+        .bg-blob {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
+            z-index: -1;
+            animation: rotate-bg 20s linear infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-number {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+            color: transparent;
+        }
+
+        /* Hero Lens Styles */
+        #hero-container {
+            position: relative;
+            overflow: hidden;
+            cursor: none;
+        }
+        .hero-layer {
+            min-height: screen;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 1.5rem 0;
+        }
+        .hero-dark {
+            background-color: #030303;
+            color: #ffffff;
+        }
+        .hero-light {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background-color: #ffffff;
+            color: #030303;
+            pointer-events: none;
+            clip-path: circle(0px at 50% 50%);
+        }
+        .hero-light h1 { color: #030303; }
+        .hero-light p { color: #333333; }
+        .hero-light .glass {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--secondary);
+        }
+        .hero-light .glow-button {
+            background: #030303;
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .hero-light .gradient-text {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: hue-rotate(180deg);
+        }
+        .hero-light .logo-gradient {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Dark Lens Reveal Styles - Removed old section styles */
+        #reveal-section { display: none; }
+        
+        /* Theme Customizer Styles */
+        .logo-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: background 0.3s ease;
+        }
+        #theme-panel {
+            display: none;
+        }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
-    <div id="root"></div>
+    <!-- Theme Toggle Button -->
+    <div class="fixed bottom-8 left-8 z-[100]" dir="ltr">
+        <button id="toggle-cycle" class="group relative flex items-center gap-3 glass px-6 py-4 rounded-2xl shadow-2xl hover:bg-white/10 transition-all border border-white/20">
+            <div id="cycle-indicator" class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
+            <span id="cycle-text" class="text-white font-bold text-xs uppercase tracking-widest">צבעים חיים</span>
+            <div id="pause-icon" class="hidden">⏸</div>
+            <div id="play-icon" class="hidden">▶</div>
+        </button>
+    </div>
 
+    <div class="bg-blob"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-center">
+        <div class="glass max-w-5xl w-full px-6 py-3 rounded-2xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 logo-gradient rounded-xl flex items-center justify-center font-bold text-black text-2xl shadow-lg">O</div>
+                <span class="text-2xl font-bold font-modern tracking-tighter text-white">OPTIMIZE</span>
+            </div>
+            <div class="hidden md:flex items-center gap-10 text-gray-300">
+                <a href="#home" class="text-sm font-semibold transition-colors hover:text-cyan-400">בית</a>
+                <a href="#services" class="text-sm font-semibold transition-colors hover:text-cyan-400">שירותים</a>
+                <a href="#pricing" class="text-sm font-semibold transition-colors hover:text-cyan-400">מחירים</a>
+                <a href="#portfolio" class="text-sm font-semibold transition-colors hover:text-cyan-400">עבודות</a>
+            </div>
+            <a href="#contact" class="bg-white text-black px-6 py-2 rounded-xl font-bold text-sm hover:bg-cyan-400 transition-all duration-300">בואו נדבר</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Lens Reveal -->
+    <div id="hero-container">
+        <!-- Dark Layer (Base) -->
+        <section id="home" class="hero-layer hero-dark min-h-screen relative overflow-hidden">
+            <canvas id="hero-bg-canvas" class="absolute inset-0 z-0 opacity-40"></canvas>
+            <div class="relative z-10 max-w-5xl">
+                <div class="inline-block glass px-4 py-2 rounded-full text-cyan-400 text-sm font-bold mb-6 tracking-widest uppercase">
+                    סוכנות בניית אתרים מונעת AI
+                </div>
+                <h1 class="text-6xl md:text-9xl font-black mb-8 leading-none tracking-tighter text-white">
+                    אל תתפשרו.<br /><span class="gradient-text">OPTIMIZE</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+                    אנחנו בונים אתרים שלא רק נראים "סופר", אלא עובדים בשבילכם 24/7. 
+                    עיצוב קצה, חווית משתמש מושלמת ומחירים שמאפשרים לכם לצמוח.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <a href="#contact" class="glow-button text-black px-12 py-5 rounded-2xl font-black text-xl w-full sm:w-auto text-center">בואו נדבר</a>
+                    <a href="#portfolio" class="glass px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white/10 transition-all w-full sm:w-auto text-white border border-white/10">צפו בתיק עבודות</a>
+                </div>
+            </div>
+
+            <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-12 opacity-50 relative z-10">
+                <div class="text-center">
+                    <div class="text-4xl font-black text-white">150+</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 text-cyan-500 font-bold">לקוחות מרוצים</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black text-white">99.9%</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 text-cyan-500 font-bold">זמינות שרתים</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black text-white">0.4s</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 text-cyan-500 font-bold">זמן טעינה</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black text-white">24/7</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 text-cyan-500 font-bold">תמיכה טכנית</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Light Layer (Revealed by Lens) -->
+        <section class="hero-layer hero-light min-h-screen" id="hero-lens-layer">
+            <canvas id="thread-canvas" class="absolute inset-0 z-0"></canvas>
+            <div class="relative z-10 max-w-5xl">
+                <div class="inline-block glass px-4 py-2 rounded-full text-sm font-bold mb-6 tracking-widest uppercase">
+                    סוכנות בניית אתרים מונעת AI
+                </div>
+                <h1 class="text-6xl md:text-9xl font-black mb-8 leading-none tracking-tighter">
+                    אל תתפשרו.<br /><span class="gradient-text">OPTIMIZE</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+                    אנחנו בונים אתרים שלא רק נראים "סופר", אלא עובדים בשבילכם 24/7. 
+                    עיצוב קצה, חווית משתמש מושלמת ומחירים שמאפשרים לכם לצמוח.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <div class="glow-button px-12 py-5 rounded-2xl font-black text-xl w-full sm:w-auto text-center">בואו נדבר</div>
+                    <div class="glass px-12 py-5 rounded-2xl font-bold text-xl w-full sm:w-auto text-center border">צפו בתיק עבודות</div>
+                </div>
+            </div>
+
+            <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-12 opacity-80 relative z-10">
+                <div class="text-center">
+                    <div class="text-4xl font-black">150+</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 font-bold">לקוחות מרוצים</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black">99.9%</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 font-bold">זמינות שרתים</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black">0.4s</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 font-bold">זמן טעינה</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-black">24/7</div>
+                    <div class="text-xs uppercase tracking-[0.2em] mt-2 font-bold">תמיכה טכנית</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- AI Builder Section - Removed -->
+
+
+    <!-- Particle Demo Section -->
+    <section id="particle-demo" class="relative py-32 bg-black overflow-hidden border-y border-white/5">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <canvas id="particle-canvas"></canvas>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 pointer-events-none">
+            <div class="text-center -mt-12">
+                <h2 class="text-4xl md:text-6xl font-black text-white mb-8">הראשונים בטכנולוגיה</h2>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+                <div class="text-right">
+                    <h2 class="text-5xl md:text-7xl font-black mb-6 text-white">השירותים שלנו</h2>
+                    <p class="text-gray-400 max-w-2xl text-xl font-light leading-relaxed">אנחנו לא רק מעצבים יפה - אנחנו בונים כלים עסקיים שמביאים תוצאות. מהירות, יופי ודיוק בביצוע.</p>
+                </div>
+                <div class="text-cyan-400 font-bold hover:text-white transition-colors cursor-pointer text-lg group">
+                    גלו את כל האפשרויות <span class="inline-block transition-transform group-hover:translate-x-[-5px]">&larr;</span>
+                </div>
+            </div>
+
+            <div id="pricing" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card glass p-10 rounded-[40px] border border-white/5 flex flex-col h-full relative overflow-hidden group">
+                    <div class="text-5xl mb-8 transform group-hover:scale-110 transition-transform">🚀</div>
+                    <h3 class="text-2xl font-black mb-4 text-white">דפי נחיתה</h3>
+                    <p class="text-gray-400 text-base mb-8 leading-relaxed flex-grow font-light">בניית דף נחיתה ממוקד מטרה, אופטימיזציה מלאה להמרות ועיצוב שמושך את העין.</p>
+                    <div class="pt-8 border-t border-white/10 space-y-4">
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">זמן אספקה</span><span class="text-sm text-white font-bold">עד 5 ימים</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">השקעה החל מ-</span><span class="text-2xl font-black text-cyan-400">1,490 ₪</span></div>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div class="service-card glass p-10 rounded-[40px] border border-white/5 flex flex-col h-full relative overflow-hidden group">
+                    <div class="text-5xl mb-8 transform group-hover:scale-110 transition-transform">✨</div>
+                    <h3 class="text-2xl font-black mb-4 text-white">אתרי תדמית</h3>
+                    <p class="text-gray-400 text-base mb-8 leading-relaxed flex-grow font-light">אתר תדמית יוקרתי לעסק שלך. הצגת השירותים, סיפור המותג ויצירת אמון אצל הלקוח.</p>
+                    <div class="pt-8 border-t border-white/10 space-y-4">
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">זמן אספקה</span><span class="text-sm text-white font-bold">10-14 ימים</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">השקעה החל מ-</span><span class="text-2xl font-black text-cyan-400">3,490 ₪</span></div>
+                    </div>
+                </div>
+                <!-- Service 3 -->
+                <div class="service-card glass p-10 rounded-[40px] border border-white/5 flex flex-col h-full relative overflow-hidden group">
+                    <div class="text-5xl mb-8 transform group-hover:scale-110 transition-transform">🛒</div>
+                    <h3 class="text-2xl font-black mb-4 text-white">חנויות E-com</h3>
+                    <p class="text-gray-400 text-base mb-8 leading-relaxed flex-grow font-light">מערכת מכירות משומנת. סליקה, ניהול מלאי, חיבור למשלוחים וחווית רכישה קלה.</p>
+                    <div class="pt-8 border-t border-white/10 space-y-4">
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">זמן אספקה</span><span class="text-sm text-white font-bold">21-30 ימים</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">השקעה החל מ-</span><span class="text-2xl font-black text-cyan-400">5,990 ₪</span></div>
+                    </div>
+                </div>
+                <!-- Service 4 -->
+                <div class="service-card glass p-10 rounded-[40px] border border-white/5 flex flex-col h-full relative overflow-hidden group">
+                    <div class="text-5xl mb-8 transform group-hover:scale-110 transition-transform">⚡</div>
+                    <h3 class="text-2xl font-black mb-4 text-white">פיתוח Custom</h3>
+                    <p class="text-gray-400 text-base mb-8 leading-relaxed flex-grow font-light">מערכות מורכבות, אפליקציות ווב ופתרונות טכנולוגיים מותאמים אישית לצרכי הארגון.</p>
+                    <div class="pt-8 border-t border-white/10 space-y-4">
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">זמן אספקה</span><span class="text-sm text-white font-bold">לפי אפיון</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-500 font-bold uppercase tracking-widest">השקעה החל מ-</span><span class="text-2xl font-black text-cyan-400">9,990 ₪</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section with Liquid Background -->
+    <section id="process" class="relative py-32 px-6 bg-black overflow-hidden">
+        <canvas id="liquid-canvas" class="absolute inset-0 z-0 opacity-40"></canvas>
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <h2 class="text-5xl md:text-7xl font-black mb-20 text-white">איך הופכים חלום <br /><span class="gradient-text">למציאות?</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative text-right">
+                <div class="glass p-10 rounded-[30px] border border-white/5 h-full relative group">
+                    <span class="step-number absolute -top-12 -right-4 text-9xl font-black opacity-30 group-hover:opacity-50 transition-opacity">1</span>
+                    <h3 class="text-2xl font-black mb-4 text-white">אפיון ובינה</h3>
+                    <p class="text-gray-400 font-light leading-relaxed">אנחנו מתחילים בניתוח עומק של העסק, המתחרים וקהל היעד. הכל מתחיל באסטרטגיה מדויקת.</p>
+                </div>
+                <div class="glass p-10 rounded-[30px] border border-white/5 h-full relative group">
+                    <span class="step-number absolute -top-12 -right-4 text-9xl font-black opacity-30 group-hover:opacity-50 transition-opacity">2</span>
+                    <h3 class="text-2xl font-black mb-4 text-white">עיצוב סופר-מודרני</h3>
+                    <p class="text-gray-400 font-light leading-relaxed">מעצבי ה-UI/UX שלנו יוצרים חוויה ויזואלית עוצרת נשימה שמותאמת בדיוק לערכי המותג.</p>
+                </div>
+                <div class="glass p-10 rounded-[30px] border border-white/5 h-full relative group">
+                    <span class="step-number absolute -top-12 -right-4 text-9xl font-black opacity-30 group-hover:opacity-50 transition-opacity">3</span>
+                    <h3 class="text-2xl font-black mb-4 text-white">פיתוח וביצועים</h3>
+                    <p class="text-gray-400 font-light leading-relaxed">הופכים את העיצוב לקוד נקי, מהיר ואיכותי. אופטימיזציה למהירות ולמנועי החיפוש (SEO).</p>
+                </div>
+                <div class="glass p-10 rounded-[30px] border border-white/5 h-full relative group">
+                    <span class="step-number absolute -top-12 -right-4 text-9xl font-black opacity-30 group-hover:opacity-50 transition-opacity">4</span>
+                    <h3 class="text-2xl font-black mb-4 text-white">השקה ותמיכה</h3>
+                    <p class="text-gray-400 font-light leading-relaxed">אנחנו לא עוזבים אתכם. בדיקות קפדניות, העלאה לאוויר וליווי מלא גם אחרי שהאתר מוכן.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </section>
+
+    </section>
+
+    <!-- Liquid Distortion Section - Removed -->
+    <section id="liquid-section" class="hidden"></section>
+
+    <!-- Dark Lens Reveal Section - Removed -->
+    <section id="reveal-section" class="hidden"></section>
+
+    <!-- Portfolio Preview -->
+    <section id="portfolio" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-5xl font-black mb-16 text-white">עבודות שמדברות בעד עצמן</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- Project 1 -->
+                <div class="flex flex-col gap-6 group">
+                    <div class="glass rounded-[40px] border border-white/10 overflow-hidden h-[600px] relative shadow-2xl transition-transform duration-500 group-hover:-translate-y-2">
+                        <!-- Browser Header Mockup -->
+                        <div class="bg-white/5 border-b border-white/10 p-4 flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="bg-black/40 rounded-lg px-4 py-1 text-[10px] text-gray-500 font-mono flex-grow mx-4 text-left truncate">dor-dvir.com</div>
+                        </div>
+                        <!-- Interactive Iframe -->
+                        <iframe src="https://dor-dvir.com" class="w-full h-full border-none bg-white" title="Dor & Dvir Preview"></iframe>
+                    </div>
+                    <div class="text-right px-4">
+                        <h3 class="text-2xl font-black text-white mb-2">Dor & Dvir</h3>
+                        <p class="text-gray-400 text-sm mb-6 font-light">אתר תדמית יוקרתי המציג פרויקטים ועיצובים ברמה הגבוהה ביותר.</p>
+                        <a href="https://dor-dvir.com" target="_blank" class="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-bold text-sm hover:bg-cyan-400 transition-all">
+                            <span>מעבר לאתר המלא</span>
+                            <span class="text-lg">↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="flex flex-col gap-6 group">
+                    <div class="glass rounded-[40px] border border-white/10 overflow-hidden h-[600px] relative shadow-2xl transition-transform duration-500 group-hover:-translate-y-2">
+                        <!-- Browser Header Mockup -->
+                        <div class="bg-white/5 border-b border-white/10 p-4 flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="bg-black/40 rounded-lg px-4 py-1 text-[10px] text-gray-500 font-mono flex-grow mx-4 text-left truncate">socilay.optimizeagency.co</div>
+                        </div>
+                        <!-- Interactive Iframe -->
+                        <iframe src="https://socilay.optimizeagency.co" class="w-full h-full border-none bg-white" title="Socilay Preview"></iframe>
+                    </div>
+                    <div class="text-right px-4">
+                        <h3 class="text-2xl font-black text-white mb-2">Socilay</h3>
+                        <p class="text-gray-400 text-sm mb-6 font-light">פלטפורמה חכמה לניהול ואוטומציה של נוכחות דיגיטלית ברשתות החברתיות.</p>
+                        <a href="https://socilay.optimizeagency.co" target="_blank" class="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-bold text-sm hover:bg-cyan-400 transition-all">
+                            <span>מעבר לאתר המלא</span>
+                            <span class="text-lg">↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="flex flex-col gap-6 group">
+                    <div class="glass rounded-[40px] border border-white/10 overflow-hidden h-[600px] relative shadow-2xl transition-transform duration-500 group-hover:-translate-y-2">
+                        <!-- Browser Header Mockup -->
+                        <div class="bg-white/5 border-b border-white/10 p-4 flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="bg-black/40 rounded-lg px-4 py-1 text-[10px] text-gray-500 font-mono flex-grow mx-4 text-left truncate">www.optimizeagency.co</div>
+                        </div>
+                        <!-- Interactive Iframe -->
+                        <iframe src="https://www.optimizeagency.co" class="w-full h-full border-none bg-white" title="Optimize Agency Preview"></iframe>
+                    </div>
+                    <div class="text-right px-4">
+                        <h3 class="text-2xl font-black text-white mb-2">Optimize Agency</h3>
+                        <p class="text-gray-400 text-sm mb-6 font-light">הבית הדיגיטלי שלנו. שילוב של טכנולוגיה, עיצוב ואסטרטגיה מנצחת.</p>
+                        <a href="https://www.optimizeagency.co" target="_blank" class="inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-xl font-bold text-sm hover:bg-cyan-400 transition-all">
+                            <span>מעבר לאתר המלא</span>
+                            <span class="text-lg">↗</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="#contact" class="inline-block mt-24 px-12 py-5 border border-white/10 rounded-2xl font-bold hover:bg-white hover:text-black transition-all duration-300 text-white text-xl">רוצים אתר כזה? דברו איתנו</a>
+        </div>
+    </section>
+
+    <!-- 3D Infinite Tunnel Section -->
+    <section id="tunnel-section" class="relative h-[300vh] bg-black">
+        <div class="sticky top-0 h-screen w-full overflow-hidden">
+            <canvas id="tunnel-canvas" class="absolute inset-0"></canvas>
+            <div id="tunnel-text-overlay" class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                <div class="text-center">
+                    <h2 class="text-5xl md:text-8xl font-black text-white mb-4 tracking-tighter uppercase italic">המסע שלכם מתחיל כאן</h2>
+                    <p class="text-cyan-400 font-bold tracking-[0.3em] uppercase">גללו כדי לצלול לעומק</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6">
+        <div class="max-w-4xl mx-auto glass p-1 md:p-1 rounded-[50px] border border-white/10">
+            <div class="bg-black/50 rounded-[49px] p-12 md:p-20 relative overflow-hidden">
+                <div class="absolute -top-32 -left-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px]"></div>
+                <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px]"></div>
+                
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <h2 class="text-5xl font-black mb-6 text-white leading-tight">בואו נבנה משהו<br /><span class="gradient-text">יוצא דופן ביחד</span></h2>
+                        <p class="text-gray-400 text-xl font-light">השאירו פרטים ונחזור אליכם עם הצעה שלא תוכלו לסרב לה.</p>
+                    </div>
+
+                    <form id="contact-form" class="space-y-8" onsubmit="event.preventDefault(); document.getElementById('submit-btn').innerText = 'נשלח בהצלחה! ✅'; setTimeout(()=> { this.reset(); document.getElementById('submit-btn').innerText = 'שלח הודעה'; }, 3000);">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-right">
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-gray-500 uppercase tracking-widest mr-2">שם מלא</label>
+                                <input type="text" required class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-8 focus:border-cyan-400 outline-none transition-all text-white text-lg placeholder-gray-700" placeholder="ישראל ישראלי" />
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-gray-500 uppercase tracking-widest mr-2">אימייל</label>
+                                <input type="email" required dir="ltr" class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-8 focus:border-cyan-400 outline-none transition-all text-white text-lg placeholder-gray-700 text-right" placeholder="your@email.com" />
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-right">
+                            <label class="text-sm font-bold text-gray-500 uppercase tracking-widest mr-2">מה האתגר שלכם?</label>
+                            <textarea required class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-8 h-40 focus:border-cyan-400 outline-none transition-all resize-none text-white text-lg placeholder-gray-700" placeholder="ספרו לנו קצת על הפרויקט..."></textarea>
+                        </div>
+                        <button id="submit-btn" type="submit" class="w-full glow-button text-black py-6 rounded-2xl font-black text-2xl uppercase tracking-widest transition-all">שלח הודעה</button>
+                    </form>
+
+                    <div class="mt-20 pt-16 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-10 text-center text-white">
+                        <div class="group cursor-pointer">
+                            <p class="text-gray-500 text-xs mb-2 uppercase tracking-widest font-bold">וואטסאפ</p>
+                            <p class="font-bold text-xl group-hover:text-cyan-400 transition-colors">050-123-4567</p>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <p class="text-gray-500 text-xs mb-2 uppercase tracking-widest font-bold">אימייל</p>
+                            <p class="font-bold text-xl group-hover:text-cyan-400 transition-colors">hello@optimize.co.il</p>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <p class="text-gray-500 text-xs mb-2 uppercase tracking-widest font-bold">מיקום</p>
+                            <p class="font-bold text-xl group-hover:text-cyan-400 transition-colors">תל אביב, ישראל</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 border-t border-white/5 text-center text-gray-500 bg-black">
+        <div class="flex flex-col items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 logo-gradient rounded-lg flex items-center justify-center font-bold text-black text-xl">O</div>
+                <span class="text-xl font-bold font-modern tracking-tighter text-white">OPTIMIZE</span>
+            </div>
+            <div class="flex gap-10 text-sm font-semibold">
+                <a href="#home" class="hover:text-white transition-colors">בית</a>
+                <a href="#services" class="hover:text-white transition-colors">שירותים</a>
+                <a href="#portfolio" class="hover:text-white transition-colors">עבודות</a>
+                <a href="#contact" class="hover:text-white transition-colors">צור קשר</a>
+            </div>
+            <p class="text-sm font-light tracking-[0.3em] uppercase opacity-40">© 2024 Optimize Web Agency. Crafting Digital Excellence.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
     <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "htm": "https://esm.sh/htm@3.1.1",
     "@google/genai": "https://esm.sh/@google/genai@1.3.0",
+    "react": "https://esm.sh/react@^19.2.4",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
-
     <script type="module">
-        import React from 'react';
-        import ReactDOM from 'react-dom/client';
-        import htm from 'htm';
         import { GoogleGenAI, Type } from "@google/genai";
 
-        const html = htm.bind(React.createElement);
-        const { useState } = React;
+        // Hero Lens Logic
+        const heroContainer = document.getElementById('hero-container');
+        const heroLensLayer = document.getElementById('hero-lens-layer');
+        
+        let hX = 0, hY = 0;
+        let curHX = 0, curHY = 0;
+        let hInside = false;
 
-        // --- AI Logic ---
-        const API_KEY = (typeof process !== 'undefined' && process.env && process.env.API_KEY) || "";
-        const generateSiteConcept = async (userDescription) => {
-            if (!API_KEY) throw new Error("API Key is missing");
-            const ai = new GoogleGenAI({ apiKey: API_KEY });
-            const response = await ai.models.generateContent({
-                model: "gemini-3-flash-preview",
-                contents: `Generate a professional website strategy and structure for: ${userDescription}. The language should be Hebrew.`,
-                config: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: Type.OBJECT,
-                        properties: {
-                            brandName: { type: Type.STRING },
-                            tagline: { type: Type.STRING },
-                            colors: {
-                                type: Type.OBJECT,
-                                properties: {
-                                    primary: { type: Type.STRING },
-                                    secondary: { type: Type.STRING },
-                                    accent: { type: Type.STRING }
-                                }
-                            },
-                            sections: {
-                                type: Type.ARRAY,
-                                items: {
-                                    type: Type.OBJECT,
-                                    properties: {
-                                        title: { type: Type.STRING },
-                                        description: { type: Type.STRING }
-                                    }
-                                }
-                            },
-                            priceEstimation: { type: Type.STRING }
-                        },
-                        required: ["brandName", "tagline", "colors", "sections", "priceEstimation"]
+        heroContainer.addEventListener('mousemove', (e) => {
+            const rect = heroContainer.getBoundingClientRect();
+            hX = e.clientX - rect.left;
+            hY = e.clientY - rect.top;
+            hInside = true;
+        });
+
+        heroContainer.addEventListener('mouseleave', () => {
+            hInside = false;
+        });
+
+        heroContainer.addEventListener('touchstart', (e) => {
+            hInside = true;
+            updateHeroTouch(e);
+        });
+
+        heroContainer.addEventListener('touchmove', (e) => {
+            updateHeroTouch(e);
+        });
+
+        function updateHeroTouch(e) {
+            const rect = heroContainer.getBoundingClientRect();
+            const touch = e.touches[0];
+            hX = touch.clientX - rect.left;
+            hY = touch.clientY - rect.top;
+        }
+
+        function animateHeroLens() {
+            curHX += (hX - curHX) * 0.12;
+            curHY += (hY - curHY) * 0.12;
+
+            const lensSize = hInside ? 60 : 0;
+            heroLensLayer.style.clipPath = `circle(${lensSize}px at ${curHX}px ${curHY}px)`;
+            
+            requestAnimationFrame(animateHeroLens);
+        }
+
+        animateHeroLens();
+
+        // Thread World Logic (Generative Threads behind the lens)
+        function initThreadWorld() {
+            const canvas = document.getElementById('thread-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let threads = [];
+            const threadCount = 40;
+
+            function resize() {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            }
+
+            class Thread {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.points = [];
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.speed = 0.5 + Math.random() * 1.5;
+                    this.maxLength = 50 + Math.random() * 150;
+                    this.life = 0;
+                    this.maxLife = 200 + Math.random() * 400;
+                }
+
+                update() {
+                    this.life++;
+                    
+                    // Add noise to angle
+                    this.angle += (Math.random() - 0.5) * 0.1;
+                    
+                    // React to lens position (curHX, curHY)
+                    const dx = curHX - this.x;
+                    const dy = curHY - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 200) {
+                        const force = (200 - dist) / 200;
+                        this.angle += Math.atan2(dy, dx) * force * 0.02;
+                        this.speed = 2 + force * 3;
+                    } else {
+                        this.speed *= 0.98;
+                        if (this.speed < 0.5) this.speed = 0.5;
+                    }
+
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed;
+
+                    this.points.push({ x: this.x, y: this.y });
+                    if (this.points.length > this.maxLength) {
+                        this.points.shift();
+                    }
+
+                    if (this.life > this.maxLife || this.x < -100 || this.x > width + 100 || this.y < -100 || this.y > height + 100) {
+                        this.reset();
                     }
                 }
+
+                draw() {
+                    if (this.points.length < 2) return;
+                    ctx.beginPath();
+                    ctx.moveTo(this.points[0].x, this.points[0].y);
+                    for (let i = 1; i < this.points.length; i++) {
+                        ctx.lineTo(this.points[i].x, this.points[i].y);
+                    }
+                    ctx.strokeStyle = `rgba(180, 180, 180, ${Math.min(0.3, (this.maxLife - this.life) / 100)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+
+            for (let i = 0; i < threadCount; i++) {
+                threads.push(new Thread());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                // Background is white from CSS, but we can ensure it here if needed
+                
+                threads.forEach(t => {
+                    t.update();
+                    t.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        initThreadWorld();
+
+        // Particle System Logic
+        function initParticleSystem() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const mouse = { x: null, y: null, radius: 150 };
+
+            function resize() {
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+                init();
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
             });
-            return JSON.parse(response.text);
-        };
 
-        // --- Components ---
+            window.addEventListener('touchstart', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.touches[0].clientX - rect.left;
+                mouse.y = e.touches[0].clientY - rect.top;
+            });
 
-        const Navbar = () => html`
-            <nav className="fixed top-0 left-0 right-0 z-50 glass px-6 py-4 mx-4 my-4 rounded-2xl flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center font-bold text-black text-xl">O</div>
-                    <span className="text-2xl font-bold font-modern tracking-tighter text-white">OPTIMIZE</span>
-                </div>
-                <div className="hidden md:flex items-center gap-8">
-                    ${['בית', 'בונה AI', 'שירותים', 'תהליך', 'תיק עבודות', 'צור קשר'].map((label, idx) => html`
-                        <a key=${idx} href="#${['home', 'ai-builder', 'services', 'process', 'portfolio', 'contact'][idx]}" className="text-sm font-medium transition-colors hover:text-cyan-400 text-gray-300">
-                            ${label}
-                        </a>
-                    `)}
-                </div>
-                <button className="bg-white text-black px-5 py-2 rounded-full font-bold text-sm hover:bg-cyan-400 transition-colors">בואו נתחיל</button>
-            </nav>
-        `;
+            window.addEventListener('touchmove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.touches[0].clientX - rect.left;
+                mouse.y = e.touches[0].clientY - rect.top;
+            });
 
-        const Hero = () => html`
-            <div id="home" className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden pt-20">
-                <div className="absolute top-1/4 -left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-[100px] animate-pulse-bg"></div>
-                <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] animate-pulse-bg"></div>
-                <div className="relative z-10 max-w-5xl">
-                    <h1 className="text-6xl md:text-9xl font-black mb-6 leading-tight tracking-tighter text-white">
-                        אל תתפשרו.<br /><span className="gradient-text">OPTIMIZE.</span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        אנחנו בונים אתרים שלא רק נראים מדהים, אלא עובדים בשבילכם. 
-                        עיצוב נועז, מחיר הוגן וביצועים של רכב על.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <button className="glow-button bg-cyan-500 text-black px-10 py-5 rounded-2xl font-black text-xl w-full sm:w-auto">התחילו עכשיו</button>
-                        <button className="glass px-10 py-5 rounded-2xl font-bold text-xl hover:bg-white/10 transition-all w-full sm:w-auto text-white">צפו בעבודות שלנו</button>
-                    </div>
-                </div>
-            </div>
-        `;
+            window.addEventListener('touchend', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
 
-        const AIBrain = () => {
-            const [description, setDescription] = useState('');
-            const [loading, setLoading] = useState(false);
-            const [strategy, setStrategy] = useState(null);
-            const [error, setError] = useState('');
+            class Particle {
+                constructor(x, y) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.baseX = x;
+                    this.baseY = y;
+                    this.size = 1.5;
+                    this.density = (Math.random() * 30) + 1;
+                    this.vx = 0;
+                    this.vy = 0;
+                    this.friction = 0.95;
+                    this.spring = 0.05;
+                }
 
-            const handleGenerate = async () => {
-                if (!description) return;
-                setLoading(true); setError('');
-                try {
-                    const result = await generateSiteConcept(description);
-                    setStrategy(result);
-                } catch (err) {
-                    setError('חלה שגיאה ביצירת הקונספט. נסו שוב.');
-                } finally { setLoading(false); }
+                draw() {
+                    ctx.fillStyle = '#00f2fe';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                update() {
+                    // Repulsion
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = forceDirectionX * force * this.density;
+                    let directionY = forceDirectionY * force * this.density;
+
+                    if (distance < mouse.radius) {
+                        this.vx -= directionX;
+                        this.vy -= directionY;
+                    }
+
+                    // Spring back to home
+                    let dxHome = this.baseX - this.x;
+                    let dyHome = this.baseY - this.y;
+                    this.vx += dxHome * this.spring;
+                    this.vy += dyHome * this.spring;
+
+                    // Shiver effect
+                    this.vx += (Math.random() - 0.5) * 0.5;
+                    this.vy += (Math.random() - 0.5) * 0.5;
+
+                    this.vx *= this.friction;
+                    this.vy *= this.friction;
+
+                    this.x += this.vx;
+                    this.y += this.vy;
+                }
+            }
+
+            function init() {
+                particles = [];
+                const fontSize = Math.min(canvas.width / 6, 150);
+                ctx.font = `bold ${fontSize}px "Space Grotesk", sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = 'white';
+                ctx.fillText('OPTIMIZE', canvas.width / 2, canvas.height / 2 + 40);
+
+                const textData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let y = 0; y < textData.height; y += 4) {
+                    for (let x = 0; x < textData.width; x += 4) {
+                        if (textData.data[(y * 4 * textData.width) + (x * 4) + 3] > 128) {
+                            particles.push(new Particle(x, y));
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        initParticleSystem();
+
+        // Hero Dark Background Logic (Subtle Floating Grid/Nodes)
+        function initHeroBackground() {
+            const canvas = document.getElementById('hero-bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let nodes = [];
+            const nodeCount = 60;
+
+            function resize() {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            }
+
+            class Node {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.size = Math.random() * 2 + 1;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+
+                draw() {
+                    ctx.fillStyle = 'rgba(0, 242, 254, 0.3)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push(new Node());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                nodes.forEach((node, i) => {
+                    node.update();
+                    node.draw();
+
+                    // Draw lines between nearby nodes
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const other = nodes[j];
+                        const dx = node.x - other.x;
+                        const dy = node.y - other.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 150) {
+                            ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 * (1 - dist / 150)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(other.x, other.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        initHeroBackground();
+
+        // Three.js Liquid Distortion Logic
+        const initLiquidEffect = () => {
+            const canvas = document.getElementById('liquid-canvas');
+            const section = document.getElementById('process');
+            if (!canvas || !section) return;
+
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas, 
+                antialias: false, // Disable antialias for better performance on shaders
+                alpha: true,
+                powerPreference: "high-performance"
+            });
+            
+            // Cap pixel ratio to 2 for performance on high-DPI screens
+            const pixelRatio = Math.min(window.devicePixelRatio, 2);
+            renderer.setPixelRatio(pixelRatio);
+            renderer.setSize(section.offsetWidth, section.offsetHeight);
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            // Shaders
+            const vertexShader = `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position, 1.0);
+                }
+            `;
+
+            const fragmentShader = `
+                varying vec2 vUv;
+                uniform sampler2D uTexture;
+                uniform vec2 uMouse;
+                uniform float uVelo;
+                uniform float uTime;
+                uniform float uOpacity;
+
+                void main() {
+                    vec2 uv = vUv;
+                    
+                    // Liquid distortion logic
+                    float dist = distance(uv, uMouse);
+                    float strength = 0.15 * uVelo * exp(-dist * 10.0);
+                    
+                    // RGB Displacement
+                    vec2 offset = vec2(
+                        sin(uTime + uv.y * 10.0),
+                        cos(uTime + uv.x * 10.0)
+                    ) * strength;
+
+                    float r = texture2D(uTexture, uv + offset * 1.2).r;
+                    float g = texture2D(uTexture, uv + offset).g;
+                    float b = texture2D(uTexture, uv + offset * 0.8).b;
+
+                    gl_FragColor = vec4(r, g, b, uOpacity);
+                }
+            `;
+
+            // Create a texture from the background or a placeholder
+            const loader = new THREE.TextureLoader();
+            const texture = loader.load('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+            
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTexture: { value: texture },
+                    uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+                    uVelo: { value: 0.0 },
+                    uTime: { value: 0.0 },
+                    uOpacity: { value: 0.0 }
+                },
+                vertexShader,
+                fragmentShader,
+                transparent: true
+            });
+
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+            scene.add(mesh);
+
+            let targetMouse = new THREE.Vector2(0.5, 0.5);
+            let currentVelo = 0;
+            let lastMouse = new THREE.Vector2(0.5, 0.5);
+
+            section.addEventListener('mousemove', (e) => {
+                const rect = section.getBoundingClientRect();
+                targetMouse.x = (e.clientX - rect.left) / rect.width;
+                targetMouse.y = 1.0 - (e.clientY - rect.top) / rect.height;
+                hInside = true; // Sync with hero lens state if needed
+            }, { passive: true });
+
+            // Intersection Observer for smooth fade in/out
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    gsap.to(material.uniforms.uOpacity, {
+                        value: entry.isIntersecting ? 0.4 : 0,
+                        duration: 1.0,
+                        ease: "sine.inOut"
+                    });
+                });
+            }, { threshold: 0.01 });
+
+            observer.observe(section);
+
+            const animate = (time) => {
+                material.uniforms.uTime.value = time * 0.001;
+                
+                // Smoother interpolation
+                material.uniforms.uMouse.value.x += (targetMouse.x - material.uniforms.uMouse.value.x) * 0.1;
+                material.uniforms.uMouse.value.y += (targetMouse.y - material.uniforms.uMouse.value.y) * 0.1;
+                
+                // Calculate velocity based on interpolated movement for smoothness
+                const dx = targetMouse.x - lastMouse.x;
+                const dy = targetMouse.y - lastMouse.y;
+                const velo = Math.sqrt(dx*dx + dy*dy) * 10.0;
+                
+                currentVelo += (velo - currentVelo) * 0.1;
+                currentVelo *= 0.95;
+                material.uniforms.uVelo.value = Math.min(currentVelo, 2.0);
+                
+                lastMouse.copy(targetMouse);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
             };
 
-            return html`
-                <section id="ai-builder" className="py-20 px-6 bg-[#080808]">
-                    <div className="max-w-7xl mx-auto">
-                        <h2 className="text-4xl md:text-6xl font-bold mb-4 text-center text-white">תנו ל-<span className="gradient-text">AI</span> לבנות אסטרטגיה</h2>
-                        <div className="glass p-8 md:p-12 rounded-3xl border border-white/5 grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
-                            <div className="space-y-6">
-                                <h3 className="text-2xl font-bold text-white">מה אתם רוצים לבנות?</h3>
-                                <textarea
-                                    value=${description} onChange=${e => setDescription(e.target.value)}
-                                    placeholder="לדוגמה: אתר למסעדת שף מודרנית..."
-                                    className="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-6 text-white focus:outline-none focus:border-cyan-500/50 transition-colors resize-none"
-                                />
-                                <button onClick=${handleGenerate} disabled=${loading} className=${`w-full py-5 rounded-2xl font-black text-xl text-black ${loading ? 'bg-gray-700' : 'bg-cyan-500'}`}>
-                                    ${loading ? 'ה-AI מעבד נתונים...' : 'צור קונספט ראשוני'}
-                                </button>
-                                ${error && html`<p className="text-red-400 text-center">${error}</p>`}
-                            </div>
-                            <div className="bg-black/50 rounded-2xl border border-white/5 min-h-[400px] p-8">
-                                ${strategy ? html`
-                                    <div className="animate-in fade-in duration-700 text-white">
-                                        <h4 className="text-cyan-400 font-bold text-sm uppercase mb-1">שם מותג</h4>
-                                        <p className="text-3xl font-black">${strategy.brandName}</p>
-                                        <p className="text-gray-400 italic mb-6">"${strategy.tagline}"</p>
-                                        <div className="grid grid-cols-2 gap-4 mb-6">
-                                            <div>
-                                                <h4 className="text-gray-500 text-xs mb-2">צבעים</h4>
-                                                <div className="flex gap-2">
-                                                    <div className="w-8 h-8 rounded-lg" style=${{ backgroundColor: strategy.colors.primary }}></div>
-                                                    <div className="w-8 h-8 rounded-lg" style=${{ backgroundColor: strategy.colors.secondary }}></div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-gray-500 text-xs mb-2">מחיר משוער</h4>
-                                                <p className="text-xl font-bold text-green-400">${strategy.priceEstimation}</p>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-3">
-                                            ${strategy.sections.map((s, i) => html`
-                                                <div key=${i} className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                    <h5 className="font-bold text-cyan-300">${s.title}</h5>
-                                                    <p className="text-xs text-gray-400">${s.description}</p>
-                                                </div>
-                                            `)}
-                                        </div>
-                                    </div>
-                                ` : html`<p className="text-gray-500 text-center mt-32">הקונספט יופיע כאן</p>`}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            `;
+            window.addEventListener('resize', () => {
+                renderer.setSize(section.offsetWidth, section.offsetHeight);
+            });
+
+            animate(0);
         };
 
-        const Services = () => {
-            const items = [
-                { title: 'דפי נחיתה', price: 'החל מ-1,500 ₪', time: 'עד 7 ימים', icon: '🚀' },
-                { title: 'חנות איקומרס', price: 'החל מ-5,000 ₪', time: '21-35 ימים', icon: '🛒' },
-                { title: 'אתרי תדמית', price: 'החל מ-3,500 ₪', time: '10-14 ימים', icon: '✨' },
-                { title: 'אפליקציות Web', price: 'החל מ-10,000 ₪', time: 'לפי אפיון', icon: '📱' },
-            ];
-            return html`
-                <section id="services" className="py-20 px-6 max-w-7xl mx-auto">
-                    <h2 className="text-5xl font-black mb-12 text-white">השירותים שלנו</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        ${items.map((s, i) => html`
-                            <div key=${i} className="group glass p-8 rounded-3xl border border-white/5 hover:border-cyan-500/30 transition-all flex flex-col">
-                                <div className="text-4xl mb-6">${s.icon}</div>
-                                <h3 className="text-xl font-bold mb-3 text-white">${s.title}</h3>
-                                <div className="mt-auto pt-6 border-t border-white/5">
-                                    <p className="text-xs text-gray-500 uppercase">זמן: ${s.time}</p>
-                                    <p className="text-cyan-500 font-black">${s.price}</p>
-                                </div>
-                            </div>
-                        `)}
-                    </div>
-                </section>
-            `;
-        };
+        // Initialize Three.js after a small delay to ensure DOM is ready
+        setTimeout(() => {
+            initLiquidEffect();
+            initTunnelEffect();
+        }, 100);
 
-        const Process = () => html`
-            <section id="process" className="py-20 px-6 bg-[#080808]">
-                <div className="max-w-7xl mx-auto">
-                    <h2 className="text-5xl font-black mb-12 text-center text-white">איך זה עובד?</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        ${[ 
-                            { step: '01', title: 'אפיון', time: '1-3 ימים' },
-                            { step: '02', title: 'עיצוב', time: '3-7 ימים' },
-                            { step: '03', title: 'פיתוח', time: '5-14 ימים' },
-                            { step: '04', title: 'השקה', time: '1-2 ימים' }
-                        ].map((s, i) => html`
-                            <div key=${i} className="glass p-8 rounded-3xl relative overflow-hidden group">
-                                <span className="absolute -top-4 -right-2 text-7xl font-black text-white/5">${s.step}</span>
-                                <p className="text-cyan-400 font-bold mb-2">${s.time}</p>
-                                <h3 className="text-2xl font-bold text-white">${s.title}</h3>
-                            </div>
-                        `)}
-                    </div>
-                </div>
-            </section>
-        `;
+        // 3D Infinite Tunnel Logic
+        function initTunnelEffect() {
+            const canvas = document.getElementById('tunnel-canvas');
+            const container = document.getElementById('tunnel-section');
+            const tunnelOverlay = document.getElementById('tunnel-text-overlay');
+            if (!canvas || !container) return;
 
-        const Portfolio = () => html`
-            <section id="portfolio" className="py-20 px-6 max-w-7xl mx-auto">
-                <h2 className="text-5xl font-black mb-12 text-center text-white">עבודות נבחרות</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    ${[1, 2, 3, 4].map(i => html`
-                        <div key=${i} className="aspect-video rounded-3xl bg-gray-900 overflow-hidden relative group">
-                            <img src=${`https://picsum.photos/seed/${i + 20}/800/600`} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform" />
-                            <div className="absolute inset-0 flex items-end p-8 bg-gradient-to-t from-black/80 to-transparent">
-                                <h3 className="text-2xl font-bold text-white">פרויקט לדוגמה #${i}</h3>
-                            </div>
-                        </div>
-                    `)}
-                </div>
-            </section>
-        `;
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const Contact = () => html`
-            <section id="contact" className="py-20 px-6 bg-[#080808]">
-                <div className="max-w-4xl mx-auto glass p-12 rounded-[40px] border border-white/5 relative">
-                    <h2 className="text-5xl font-black mb-8 text-center text-white">מוכנים ל-Upgrade?</h2>
-                    <form className="space-y-6" onSubmit=${e => e.preventDefault()}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <input placeholder="שם מלא" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none" />
-                            <input placeholder="אימייל" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none" />
-                        </div>
-                        <textarea placeholder="איך נוכל לעזור?" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 h-32 text-white outline-none resize-none" />
-                        <button className="w-full bg-white text-black py-5 rounded-2xl font-black text-xl hover:bg-cyan-400 transition-colors">שלח הודעה</button>
-                    </form>
-                    <div className="mt-12 pt-12 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white">
-                        <div><p className="text-gray-500 text-xs">וואטסאפ</p><p className="font-bold">050-123-4567</p></div>
-                        <div><p className="text-gray-500 text-xs">אימייל</p><p className="font-bold">hello@optimize.co.il</p></div>
-                        <div><p className="text-gray-500 text-xs">מיקום</p><p className="font-bold">תל אביב, ישראל</p></div>
-                    </div>
-                </div>
-            </section>
-        `;
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
-        const App = () => html`
-            <div className="min-h-screen selection:bg-cyan-500 selection:text-black">
-                <${Navbar} />
-                <${Hero} />
-                <${AIBrain} />
-                <${Services} />
-                <${Process} />
-                <${Portfolio} />
-                <${Contact} />
-                <footer className="py-12 text-center text-gray-500 border-t border-white/10">
-                    <span className="text-2xl font-bold font-modern text-white">OPTIMIZE</span>
-                    <p className="mt-2">© 2024 Optimize. כל הזכויות שמורות. בניית אתרים ברמה אחרת.</p>
-                </footer>
-            </div>
-        `;
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(html`<${App} />`);
+            // Tunnel Geometry
+            const tunnelRadius = 5;
+            const tunnelLength = 100;
+            const segments = 100;
+            const radialSegments = 20;
+
+            const tunnelGeometry = new THREE.CylinderGeometry(tunnelRadius, tunnelRadius, tunnelLength, radialSegments, segments, true);
+            const tunnelMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00f2fe,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.2,
+                side: THREE.BackSide
+            });
+
+            const tunnel = new THREE.Mesh(tunnelGeometry, tunnelMaterial);
+            tunnel.rotation.x = Math.PI / 2;
+            scene.add(tunnel);
+
+            // Add Neon Rings
+            const rings = [];
+            for (let i = 0; i < 20; i++) {
+                const ringGeo = new THREE.TorusGeometry(tunnelRadius, 0.05, 8, 50);
+                const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.position.z = -i * 5;
+                scene.add(ring);
+                rings.push(ring);
+            }
+
+            // Add OPTIMIZE Text at the end
+            const createTextTexture = (text) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 1024;
+                canvas.height = 256;
+                
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.font = 'bold 160px "Space Grotesk", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Glow effect
+                ctx.shadowColor = '#00f2fe';
+                ctx.shadowBlur = 30;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                return texture;
+            };
+
+            const textPlaneGeo = new THREE.PlaneGeometry(8, 2);
+            const textPlaneMat = new THREE.MeshBasicMaterial({
+                map: createTextTexture('OPTIMIZE'),
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const textMesh = new THREE.Mesh(textPlaneGeo, textPlaneMat);
+            textMesh.position.z = -90; // Near the end of the initial tunnel
+            scene.add(textMesh);
+
+            // Scroll Interaction
+            let scrollProgress = 0;
+            window.addEventListener('scroll', () => {
+                const rect = container.getBoundingClientRect();
+                const totalHeight = container.offsetHeight - window.innerHeight;
+                const currentScroll = -rect.top;
+                scrollProgress = Math.max(0, Math.min(1, currentScroll / totalHeight));
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fade out overlay text based on scroll
+                if (tunnelOverlay) {
+                    const opacity = Math.max(0, Math.min(1, 1 - (scrollProgress * 2.5)));
+                    tunnelOverlay.style.opacity = opacity;
+                }
+
+                // Move camera through tunnel based on scroll
+                const targetZ = -scrollProgress * 80;
+                camera.position.z += (targetZ - camera.position.z) * 0.05;
+
+                // Infinite loop effect for rings
+                rings.forEach(ring => {
+                    if (camera.position.z < ring.position.z - 5) {
+                        ring.position.z -= 100;
+                    } else if (camera.position.z > ring.position.z + 95) {
+                        ring.position.z += 100;
+                    }
+                });
+
+                // Keep text at the "end" relative to camera if needed, or just leave it fixed
+                // For a better effect, let's make the text move with the infinite loop or just stay at a fixed distance
+                if (camera.position.z < textMesh.position.z - 10) {
+                    textMesh.position.z -= 100;
+                } else if (camera.position.z > textMesh.position.z + 90) {
+                    textMesh.position.z += 100;
+                }
+
+                // Subtle rotation
+                tunnel.rotation.y += 0.001;
+
+                renderer.render(scene, camera);
+            }
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            animate();
+        }
+
+        // Theme Cycle Logic
+        const toggleCycle = document.getElementById('toggle-cycle');
+        const cycleIndicator = document.getElementById('cycle-indicator');
+        const cycleText = document.getElementById('cycle-text');
+
+        let isAutoCycling = localStorage.getItem('opt-autocycle') !== 'false';
+        let hue = 180;
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+        }
+
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function updateCycleUI() {
+            if (isAutoCycling) {
+                cycleIndicator.classList.add('animate-pulse', 'bg-cyan-400');
+                cycleIndicator.classList.remove('bg-gray-600');
+                cycleText.innerText = 'צבעים חיים';
+                cycleText.classList.remove('opacity-50');
+            } else {
+                cycleIndicator.classList.remove('animate-pulse', 'bg-cyan-400');
+                cycleIndicator.classList.add('bg-gray-600');
+                cycleText.innerText = 'צבעים קבועים';
+                cycleText.classList.add('opacity-50');
+            }
+        }
+
+        function autoCycle() {
+            if (!isAutoCycling) return;
+            
+            hue = (hue + 0.5) % 360;
+            const p = hslToHex(hue, 80, 50);
+            const s = hslToHex((hue + 40) % 360, 80, 50);
+            
+            document.documentElement.style.setProperty('--primary', p);
+            document.documentElement.style.setProperty('--secondary', s);
+            document.documentElement.style.setProperty('--primary-rgb', hexToRgb(p));
+            
+            requestAnimationFrame(autoCycle);
+        }
+
+        toggleCycle.addEventListener('click', () => {
+            isAutoCycling = !isAutoCycling;
+            updateCycleUI();
+            if (isAutoCycling) {
+                localStorage.setItem('opt-autocycle', 'true');
+                autoCycle();
+            } else {
+                localStorage.setItem('opt-autocycle', 'false');
+            }
+        });
+
+        // Initialize
+        updateCycleUI();
+        if (isAutoCycling) autoCycle();
+
+        // Smooth Scrolling for nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
     </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>

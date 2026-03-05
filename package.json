@@ -1,26 +1,22 @@
 {
-  "name": "optimize-website",
+  "name": "optimize---ultra-modern-web-agency",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
-    "htm": "^3.1.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "lucide-react": "^0.344.0"
+    "@google/genai": "1.3.0",
+    "react": "^19.2.4"
   },
   "devDependencies": {
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
-    "vite": "^5.2.0"
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
   }
 }
